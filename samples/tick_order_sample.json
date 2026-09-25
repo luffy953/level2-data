@@ -1,0 +1,35 @@
+[
+  {
+    "channel": "l2.order",
+    "symbol": "600519.SH",
+    "orderSeq": 3891041,
+    "orderId": 1849102,
+    "time": "2026-09-23 14:58:22.010",
+    "orderType": "BUY",
+    "price": 1425.80,
+    "volumeShares": 5000,
+    "origOrderId": 0
+  },
+  {
+    "channel": "l2.order",
+    "symbol": "600519.SH",
+    "orderSeq": 3891042,
+    "orderId": 1849120,
+    "time": "2026-09-23 14:58:22.050",
+    "orderType": "SELL",
+    "price": 1426.00,
+    "volumeShares": 10000,
+    "origOrderId": 0
+  },
+  {
+    "channel": "l2.order",
+    "symbol": "600519.SH",
+    "orderSeq": 3891043,
+    "orderId": 1849120,
+    "time": "2026-09-23 14:58:22.180",
+    "orderType": "CANCEL",
+    "price": 1426.00,
+    "volumeShares": 10000,
+    "origOrderId": 1849120
+  }
+]

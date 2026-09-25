@@ -1,0 +1,50 @@
+[
+  {
+    "channel": "l2.trade",
+    "symbol": "600519.SH",
+    "tradeSeq": 4192081,
+    "time": "2026-09-23 14:58:22.105",
+    "price": 1425.80,
+    "volumeShares": 1200,
+    "amount": 1710960.00,
+    "side": "B",
+    "buyOrderId": 1849102,
+    "sellOrderId": 1845320
+  },
+  {
+    "channel": "l2.trade",
+    "symbol": "600519.SH",
+    "tradeSeq": 4192082,
+    "time": "2026-09-23 14:58:22.105",
+    "price": 1425.80,
+    "volumeShares": 800,
+    "amount": 1140640.00,
+    "side": "B",
+    "buyOrderId": 1849102,
+    "sellOrderId": 1845331
+  },
+  {
+    "channel": "l2.trade",
+    "symbol": "600519.SH",
+    "tradeSeq": 4192083,
+    "time": "2026-09-23 14:58:22.312",
+    "price": 1425.50,
+    "volumeShares": 500,
+    "amount": 712750.00,
+    "side": "S",
+    "buyOrderId": 1847119,
+    "sellOrderId": 1849201
+  },
+  {
+    "channel": "l2.trade",
+    "symbol": "600519.SH",
+    "tradeSeq": 4192084,
+    "time": "2026-09-23 14:58:22.480",
+    "price": 1425.80,
+    "volumeShares": 2000,
+    "amount": 2851600.00,
+    "side": "B",
+    "buyOrderId": 1849250,
+    "sellOrderId": 1846012
+  }
+]

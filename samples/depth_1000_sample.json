@@ -1,0 +1,20 @@
+{
+  "channel": "l2.depth",
+  "symbol": "600519.SH",
+  "time": "2026-09-23 14:58:22.500",
+  "lastPrice": 1425.80,
+  "bids": [
+    {"level": 1, "price": 1425.80, "volume": 8500, "ordersCount": 28},
+    {"level": 2, "price": 1425.50, "volume": 6000, "ordersCount": 15},
+    {"level": 3, "price": 1425.00, "volume": 12400, "ordersCount": 42},
+    {"level": 4, "price": 1424.80, "volume": 4100, "ordersCount": 11}
+  ],
+  "asks": [
+    {"level": 1, "price": 1426.00, "volume": 5200, "ordersCount": 19},
+    {"level": 2, "price": 1426.50, "volume": 7800, "ordersCount": 23},
+    {"level": 3, "price": 1427.00, "volume": 15600, "ordersCount": 56},
+    {"level": 4, "price": 1427.20, "volume": 3500, "ordersCount": 8}
+  ],
+  "bid1Queue": [1200, 800, 2000, 500, 1000, 3000],
+  "ask1Queue": [1500, 700, 1000, 2000]
+}

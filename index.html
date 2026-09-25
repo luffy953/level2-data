@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A股 Level-2 高频行情数据中心 · 毫秒级逐笔与千档盘口流</title>
+  <style>
+    :root {
+      --bg-main: #0b0f19;
+      --bg-card: #131b2e;
+      --bg-card-header: #1b2640;
+      --accent-cyan: #00f0ff;
+      --accent-green: #00e676;
+      --accent-red: #ff3d57;
+      --accent-amber: #ffb300;
+      --accent-purple: #a855f7;
+      --text-muted: #8899b0;
+      --text-main: #e2e8f0;
+      --border-color: #233354;
+      --font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Courier New', monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg-main);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      padding: 24px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* 顶部引流公告条 */
+    .top-banner {
+      background: linear-gradient(90deg, rgba(0, 240, 255, 0.15), rgba(168, 85, 247, 0.15));
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      border-radius: 8px;
+      padding: 12px 20px;
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .top-banner-text {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+    }
+    .top-banner-text .pulse-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent-green);
+      box-shadow: 0 0 10px var(--accent-green);
+      animation: pulse 1.8s infinite;
+    }
+    @keyframes pulse {
+      0% { opacity: 0.4; transform: scale(0.9); }
+      50% { opacity: 1; transform: scale(1.1); }
+      100% { opacity: 0.4; transform: scale(0.9); }
+    }
+    .contact-btn {
+      background: linear-gradient(135deg, #00f0ff, #00b4d8);
+      color: #0b0f19;
+      font-weight: 700;
+      font-size: 13px;
+      padding: 7px 18px;
+      border-radius: 6px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s ease;
+    }
+    .contact-btn:hover {
+      box-shadow: 0 0 15px rgba(0, 240, 255, 0.5);
+      transform: translateY(-1px);
+    }
+
+    /* Header 标题区 */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .header-title h1 {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      background: linear-gradient(90deg, #00f0ff, #00e676);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+    }
+    .header-title p {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+    .badges { display: flex; gap: 8px; flex-wrap: wrap; }
+    .badge {
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid;
+    }
+    .badge-cyan { background: rgba(0, 240, 255, 0.1); border-color: rgba(0, 240, 255, 0.4); color: var(--accent-cyan); }
+    .badge-green { background: rgba(0, 230, 118, 0.1); border-color: rgba(0, 230, 118, 0.4); color: var(--accent-green); }
+    .badge-amber { background: rgba(255, 179, 0, 0.1); border-color: rgba(255, 179, 0, 0.4); color: var(--accent-amber); }
+    .badge-purple { background: rgba(168, 85, 247, 0.1); border-color: rgba(168, 85, 247, 0.4); color: var(--accent-purple); }
+
+    /* 两列网格 */
+    .grid-layout {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(520px, 1fr));
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+    .card-header {
+      background: var(--bg-card-header);
+      padding: 12px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .card-title {
+      font-size: 14.5px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; }
+    .dot-cyan { background: var(--accent-cyan); box-shadow: 0 0 8px var(--accent-cyan); }
+    .dot-green { background: var(--accent-green); box-shadow: 0 0 8px var(--accent-green); }
+    .dot-amber { background: var(--accent-amber); box-shadow: 0 0 8px var(--accent-amber); }
+    
+    .table-container { padding: 12px; overflow-x: auto; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+    th, td {
+      padding: 8px 10px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+      white-space: nowrap;
+    }
+    th {
+      color: var(--text-muted);
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: 500;
+      background: rgba(0,0,0,0.15);
+    }
+    tr:hover { background: rgba(255,255,255,0.03); }
+    .buy { color: var(--accent-red); font-weight: 600; }
+    .sell { color: var(--accent-green); font-weight: 600; }
+    .cancel { color: var(--accent-amber); font-weight: 600; }
+    .num { text-align: right; }
+
+    /* Code Block styling */
+    .json-code {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      line-height: 1.55;
+      padding: 14px 18px;
+      overflow-x: auto;
+      color: #cbd5e1;
+      background: #0d1322;
+      border-top: 1px solid var(--border-color);
+    }
+    .k { color: #38bdf8; }       /* key */
+    .s { color: #a3e635; }       /* string */
+    .n { color: #f472b6; }       /* number */
+    .c { color: #64748b; }       /* comment */
+
+    /* Depth Bar Visual */
+    .depth-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      padding: 16px 20px;
+    }
+    .depth-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 5px 0;
+      position: relative;
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+    .bar-bg {
+      position: absolute;
+      top: 0; bottom: 0; right: 0;
+      opacity: 0.18;
+      border-radius: 3px;
+      z-index: 1;
+    }
+    .bar-buy { background: var(--accent-red); }
+    .bar-sell { background: var(--accent-green); }
+    .depth-content {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+    }
+    .queue-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 12px 18px;
+      background: #0d1322;
+      border-top: 1px solid var(--border-color);
+    }
+    .queue-tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      background: rgba(0, 240, 255, 0.08);
+      border: 1px solid rgba(0, 240, 255, 0.25);
+      color: var(--accent-cyan);
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+
+    /* 底部私域转化联系卡片 */
+    .lead-section {
+      background: linear-gradient(180deg, #131b2e 0%, #0d1424 100%);
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      border-radius: 12px;
+      padding: 30px;
+      margin-top: 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 24px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    .lead-info h2 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: #ffffff;
+    }
+    .lead-info p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+    .lead-perks {
+      display: flex;
+      gap: 16px;
+      margin-top: 14px;
+      flex-wrap: wrap;
+    }
+    .perk-item {
+      font-size: 13px;
+      color: var(--accent-cyan);
+      background: rgba(0, 240, 255, 0.08);
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid rgba(0, 240, 255, 0.2);
+    }
+    .lead-action-box {
+      background: #1b2640;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 20px 28px;
+      text-align: center;
+      min-width: 280px;
+    }
+    .lead-wechat-label {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .lead-wechat-id {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--accent-green);
+      font-family: var(--font-mono);
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+      user-select: all;
+    }
+    .copy-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #00e676, #00b0ff);
+      color: #0b0f19;
+      font-weight: 700;
+      font-size: 13px;
+      padding: 10px 0;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .copy-btn:hover {
+      opacity: 0.9;
+      transform: translateY(-1px);
+    }
+    .disclaimer {
+      text-align: center;
+      font-size: 12px;
+      color: #556987;
+      margin-top: 24px;
+      padding: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 顶部引流 Banner -->
+  <div class="top-banner">
+    <div class="top-banner-text">
+      <div class="pulse-dot"></div>
+      <span><strong>A股 Level-2 高频数据引擎</strong>：毫秒级 WebSocket 推流 · 逐笔成交 · 逐笔委托 · 千档深度盘口 · 全市场 5000+ 标的覆盖</span>
+    </div>
+    <button class="contact-btn" onclick="copyWechat()">
+      💬 添加微信申请试用 Token
+    </button>
+  </div>
+
+  <!-- 顶部状态栏 -->
+  <div class="header">
+    <div class="header-title">
+      <h1>LEVEL-2 实时行情数据流 · 逐笔要素与数据结构</h1>
+      <p>WebSocket Stream API / Sub-Millisecond Latency / 5000+ Symbols Supported</p>
+    </div>
+    <div class="badges">
+      <span class="badge badge-cyan">【逐笔成交 Tick Trade】</span>
+      <span class="badge badge-green">【逐笔委托 Tick Order】</span>
+      <span class="badge badge-amber">【千档盘口 1000-Level Depth】</span>
+      <span class="badge badge-purple">【买一档位 50 笔明细】</span>
+    </div>
+  </div>
+
+  <!-- 主体第一行：逐笔成交 vs 逐笔委托 -->
+  <div class="grid-layout">
+    
+    <!-- 逐笔成交 -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <span class="dot dot-cyan"></span>
+          <span>逐笔成交明细流 (Tick-by-Tick Trades) - 600519.SH 贵州茅台</span>
+        </div>
+        <span style="font-size: 11px; color: var(--accent-cyan); font-family: var(--font-mono);">CHANNEL: l2.trade</span>
+      </div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>时间戳 (毫秒)</th>
+              <th class="num">成交序号</th>
+              <th class="num">成交价 (元)</th>
+              <th class="num">成交量 (股)</th>
+              <th class="num">成交额 (元)</th>
+              <th>方向</th>
+              <th class="num">买方单号 / 卖方单号</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>14:58:22.105</td>
+              <td class="num">4192081</td>
+              <td class="num buy">1425.80</td>
+              <td class="num">1,200</td>
+              <td class="num">1,710,960</td>
+              <td><span class="buy">B (主动买)</span></td>
+              <td class="num">1849102 / 1845320</td>
+            </tr>
+            <tr>
+              <td>14:58:22.105</td>
+              <td class="num">4192082</td>
+              <td class="num buy">1425.80</td>
+              <td class="num">800</td>
+              <td class="num">1,140,640</td>
+              <td><span class="buy">B (主动买)</span></td>
+              <td class="num">1849102 / 1845331</td>
+            </tr>
+            <tr>
+              <td>14:58:22.312</td>
+              <td class="num">4192083</td>
+              <td class="num sell">1425.50</td>
+              <td class="num">500</td>
+              <td class="num">712,750</td>
+              <td><span class="sell">S (主动卖)</span></td>
+              <td class="num">1847119 / 1849201</td>
+            </tr>
+            <tr>
+              <td>14:58:22.480</td>
+              <td class="num">4192084</td>
+              <td class="num buy">1425.80</td>
+              <td class="num">2,000</td>
+              <td class="num">2,851,600</td>
+              <td><span class="buy">B (主动买)</span></td>
+              <td class="num">1849250 / 1846012</td>
+            </tr>
+            <tr>
+              <td>14:58:22.650</td>
+              <td class="num">4192085</td>
+              <td class="num sell">1425.50</td>
+              <td class="num">300</td>
+              <td class="num">427,650</td>
+              <td><span class="sell">S (主动卖)</span></td>
+              <td class="num">1847119 / 1849310</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <pre class="json-code"><span class="c">// WebSocket 实时 JSON 数据包格式示例</span>
+{
+  <span class="k">"channel"</span>: <span class="s">"l2.trade"</span>,
+  <span class="k">"symbol"</span>: <span class="s">"600519.SH"</span>,
+  <span class="k">"tradeSeq"</span>: <span class="n">4192084</span>,
+  <span class="k">"time"</span>: <span class="s">"2026-09-23 14:58:22.480"</span>,
+  <span class="k">"price"</span>: <span class="n">1425.80</span>,
+  <span class="k">"volumeShares"</span>: <span class="n">2000</span>,
+  <span class="k">"amount"</span>: <span class="n">2851600.00</span>,
+  <span class="k">"side"</span>: <span class="s">"B"</span>,             <span class="c">// B=主动买盘(外盘), S=主动卖盘(内盘)</span>
+  <span class="k">"buyOrderId"</span>: <span class="n">1849250</span>,  <span class="c">// 对应的买入申报单号</span>
+  <span class="k">"sellOrderId"</span>: <span class="n">1846012</span>  <span class="c">// 对应的卖出申报单号</span>
+}</pre>
+    </div>
+
+    <!-- 逐笔委托 -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <span class="dot dot-green"></span>
+          <span>逐笔委托与撤单流 (Tick-by-Tick Orders)</span>
+        </div>
+        <span style="font-size: 11px; color: var(--accent-green); font-family: var(--font-mono);">CHANNEL: l2.order</span>
+      </div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>委托时间</th>
+              <th class="num">订单编号</th>
+              <th>委托类型</th>
+              <th class="num">申报价格</th>
+              <th class="num">申报数量</th>
+              <th>状态说明</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>14:58:22.010</td>
+              <td class="num">1849102</td>
+              <td><span class="buy">买入申报</span></td>
+              <td class="num">1425.80</td>
+              <td class="num">5,000</td>
+              <td>限价买单进入撮合队列</td>
+            </tr>
+            <tr>
+              <td>14:58:22.050</td>
+              <td class="num">1849120</td>
+              <td><span class="sell">卖出申报</span></td>
+              <td class="num">1426.00</td>
+              <td class="num">10,000</td>
+              <td>大单压盘挂单</td>
+            </tr>
+            <tr>
+              <td>14:58:22.180</td>
+              <td class="num">1849120</td>
+              <td><span class="cancel">撤单申报</span></td>
+              <td class="num">1426.00</td>
+              <td class="num">10,000</td>
+              <td><span class="cancel">大单撤销 (撤单特征捕捉)</span></td>
+            </tr>
+            <tr>
+              <td>14:58:22.390</td>
+              <td class="num">1849201</td>
+              <td><span class="sell">卖出申报</span></td>
+              <td class="num">1425.50</td>
+              <td class="num">500</td>
+              <td>击穿买一主动成交</td>
+            </tr>
+            <tr>
+              <td>14:58:22.420</td>
+              <td class="num">1849250</td>
+              <td><span class="buy">买入申报</span></td>
+              <td class="num">1425.80</td>
+              <td class="num">2,000</td>
+              <td>扫货大单挂入</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <pre class="json-code"><span class="c">// 逐笔委托 & 撤单 JSON 数据包格式示例</span>
+{
+  <span class="k">"channel"</span>: <span class="s">"l2.order"</span>,
+  <span class="k">"symbol"</span>: <span class="s">"600519.SH"</span>,
+  <span class="k">"orderSeq"</span>: <span class="n">3891045</span>,
+  <span class="k">"orderId"</span>: <span class="n">1849120</span>,
+  <span class="k">"time"</span>: <span class="s">"2026-09-23 14:58:22.180"</span>,
+  <span class="k">"orderType"</span>: <span class="s">"CANCEL"</span>,    <span class="c">// BUY=买入, SELL=卖出, CANCEL=撤单</span>
+  <span class="k">"price"</span>: <span class="n">1426.00</span>,
+  <span class="k">"volumeShares"</span>: <span class="n">10000</span>,    <span class="c">// 撤销股数 10,000 股</span>
+  <span class="k">"origOrderId"</span>: <span class="n">1849120</span>    <span class="c">// 被撤销的原订单号</span>
+}</pre>
+    </div>
+
+  </div>
+
+  <!-- 主体第二行：千档深度行情 OrderBook -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">
+        <span class="dot dot-amber"></span>
+        <span>千档盘口深度 (1000-Level Deep OrderBook) & 最优档位挂单队列 (前50笔明细)</span>
+      </div>
+      <span style="font-size: 11px; color: var(--accent-amber); font-family: var(--font-mono);">CHANNEL: l2.depth / 1000 LEVELS</span>
+    </div>
+    
+    <div class="depth-grid">
+      <!-- 买盘深度 -->
+      <div>
+        <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px; font-weight: 600;">
+          买盘深度 (BID 1 ~ 1000)
+        </div>
+        <div class="depth-row">
+          <div class="bar-bg bar-buy" style="width: 85%;"></div>
+          <div class="depth-content">
+            <span class="buy">买 1 (Bid 1) : 1425.80</span>
+            <span class="num">8,500 股 [28笔]</span>
+          </div>
+        </div>
+        <div class="depth-row">
+          <div class="bar-bg bar-buy" style="width: 60%;"></div>
+          <div class="depth-content">
+            <span class="buy">买 2 (Bid 2) : 1425.50</span>
+            <span class="num">6,000 股 [15笔]</span>
+          </div>
+        </div>
+        <div class="depth-row">
+          <div class="bar-bg bar-buy" style="width: 95%;"></div>
+          <div class="depth-content">
+            <span class="buy">买 3 (Bid 3) : 1425.00</span>
+            <span class="num">12,400 股 [42笔] (支撑大单)</span>
+          </div>
+        </div>
+        <div class="depth-row">
+          <div class="bar-bg bar-buy" style="width: 40%;"></div>
+          <div class="depth-content">
+            <span class="buy">买 4 (Bid 4) : 1424.80</span>
+            <span class="num">4,100 股 [11笔]</span>
+          </div>
+        </div>
+        <div class="depth-row" style="color: var(--text-muted); font-size: 11px; justify-content: center;">
+          ... 往下完整展开支持至【买1000档 (Bid 1000)】...
+        </div>
+      </div>
+
+      <!-- 卖盘深度 -->
+      <div>
+        <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px; font-weight: 600;">
+          卖盘深度 (ASK 1 ~ 1000)
+        </div>
+        <div class="depth-row">
+          <div class="bar-bg bar-sell" style="width: 50%;"></div>
+          <div class="depth-content">
+            <span class="sell">卖 1 (Ask 1) : 1426.00</span>
+            <span class="num">5,200 股 [19笔]</span>
+          </div>
+        </div>
+        <div class="depth-row">
+          <div class="bar-bg bar-sell" style="width: 75%;"></div>
+          <div class="depth-content">
+            <span class="sell">卖 2 (Ask 2) : 1426.50</span>
+            <span class="num">7,800 股 [23笔]</span>
+          </div>
+        </div>
+        <div class="depth-row">
+          <div class="bar-bg bar-sell" style="width: 100%;"></div>
+          <div class="depth-content">
+            <span class="sell">卖 3 (Ask 3) : 1427.00</span>
+            <span class="num">15,600 股 [56笔] (阻力大单)</span>
+          </div>
+        </div>
+        <div class="depth-row">
+          <div class="bar-bg bar-sell" style="width: 35%;"></div>
+          <div class="depth-content">
+            <span class="sell">卖 4 (Ask 4) : 1427.20</span>
+            <span class="num">3,500 股 [8笔]</span>
+          </div>
+        </div>
+        <div class="depth-row" style="color: var(--text-muted); font-size: 11px; justify-content: center;">
+          ... 往上完整展开支持至【卖1000档 (Ask 1000)】...
+        </div>
+      </div>
+    </div>
+
+    <!-- 买一最优档位前50笔队列 -->
+    <div class="queue-chips">
+      <span style="font-size: 11.5px; color: var(--text-muted); align-self: center; margin-right: 6px;">
+        【买1最优档位挂单队列 (前50笔股数明细)】:
+      </span>
+      <span class="queue-tag">#1: 1200股</span>
+      <span class="queue-tag">#2: 800股</span>
+      <span class="queue-tag">#3: 2000股</span>
+      <span class="queue-tag">#4: 500股</span>
+      <span class="queue-tag">#5: 1000股</span>
+      <span class="queue-tag">#6: 3000股</span>
+      <span class="queue-tag">...</span>
+      <span class="queue-tag">#50: 600股</span>
+    </div>
+  </div>
+
+  <!-- 底部转化卡片与联系方式 -->
+  <div class="lead-section">
+    <div class="lead-info">
+      <h2>🚀 申请开通实时推流 & 免费获取高精度历史回测数据</h2>
+      <p>为高频量化、做市策略、微观盘口订单流及超短线打板系统提供高可靠低延迟的行情基础设施。</p>
+      <div class="lead-perks">
+        <div class="perk-item">✓ 免费获取热门个股单日全量 L2 逐笔样本包 (Parquet/CSV)</div>
+        <div class="perk-item">✓ 免费申请 3~7 天实时 WebSocket API 测试权限</div>
+        <div class="perk-item">✓ 支持全市场 5000+ 股票、ETF、可转债实时订阅</div>
+        <div class="perk-item">✓ 极低网络延迟，支持私有化集群与行情网关定制</div>
+      </div>
+    </div>
+    <div class="lead-action-box">
+      <div class="lead-wechat-label">微信号 (添加请备注: GitHub/量化)</div>
+      <div class="lead-wechat-id" id="wechatId">luffy953</div>
+      <button class="copy-btn" onclick="copyWechat()">📋 点击复制微信号</button>
+    </div>
+  </div>
+
+  <div class="disclaimer">
+    免责声明：本页面及数据仅供量化策略研发、学术研究与编程技术交流使用，不构成任何投资建议与证券交易诱导。市场有风险，投资需谨慎。
+  </div>
+
+  <script>
+    function copyWechat() {
+      const wechat = "luffy953";
+      navigator.clipboard.writeText(wechat).then(() => {
+        alert("微信号 [ " + wechat + " ] 已复制到剪贴板！\n请打开微信添加好友，备注「GitHub/量化」快速通过并领取测试权限。");
+      }).catch(() => {
+        prompt("请手动复制微信号：", wechat);
+      });
+    }
+  </script>
+</body>
+</html>
