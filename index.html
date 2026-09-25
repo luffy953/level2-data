@@ -119,6 +119,43 @@
     .badge-amber { background: rgba(255, 179, 0, 0.1); border-color: rgba(255, 179, 0, 0.4); color: var(--accent-amber); }
     .badge-purple { background: rgba(168, 85, 247, 0.1); border-color: rgba(168, 85, 247, 0.4); color: var(--accent-purple); }
 
+    /* 对比表格区域 */
+    .comparison-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #fff;
+    }
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .comparison-table th, .comparison-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      text-align: left;
+    }
+    .comparison-table th {
+      background: rgba(0,0,0,0.25);
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+    .highlight-cell {
+      color: var(--accent-cyan);
+      font-weight: 600;
+    }
+
     /* 两列网格 */
     .grid-layout {
       display: grid;
@@ -245,12 +282,43 @@
       border-radius: 4px;
     }
 
+    /* 全套量化系统服务卡片 */
+    .system-suite-section {
+      background: linear-gradient(135deg, rgba(19, 27, 46, 0.9), rgba(27, 38, 64, 0.9));
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .system-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .system-card {
+      background: rgba(13, 19, 34, 0.7);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 8px;
+      padding: 16px;
+    }
+    .system-card h3 {
+      font-size: 15px;
+      color: var(--accent-cyan);
+      margin-bottom: 8px;
+    }
+    .system-card p {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
     /* 底部私域转化联系卡片 */
     .lead-section {
       background: linear-gradient(180deg, #131b2e 0%, #0d1424 100%);
-      border: 1px solid rgba(0, 240, 255, 0.3);
+      border: 1px solid rgba(0, 240, 255, 0.35);
       border-radius: 12px;
-      padding: 30px;
+      padding: 32px;
       margin-top: 30px;
       display: flex;
       justify-content: space-between;
@@ -259,8 +327,12 @@
       gap: 24px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
     }
+    .lead-info {
+      flex: 1;
+      min-width: 320px;
+    }
     .lead-info h2 {
-      font-size: 22px;
+      font-size: 24px;
       font-weight: 700;
       margin-bottom: 8px;
       color: #ffffff;
@@ -272,7 +344,7 @@
     }
     .lead-perks {
       display: flex;
-      gap: 16px;
+      gap: 12px;
       margin-top: 14px;
       flex-wrap: wrap;
     }
@@ -288,19 +360,29 @@
       background: #1b2640;
       border: 1px solid var(--border-color);
       border-radius: 10px;
-      padding: 20px 28px;
+      padding: 20px 24px;
       text-align: center;
-      min-width: 280px;
+      min-width: 260px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .qr-img {
+      width: 130px;
+      height: 130px;
+      border-radius: 8px;
+      margin-bottom: 12px;
+      border: 1px solid rgba(255,255,255,0.2);
     }
     .lead-wechat-label {
       font-size: 12px;
       color: var(--text-muted);
-      margin-bottom: 6px;
+      margin-bottom: 4px;
       text-transform: uppercase;
       letter-spacing: 1px;
     }
     .lead-wechat-id {
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 700;
       color: var(--accent-green);
       font-family: var(--font-mono);
@@ -339,10 +421,10 @@
   <div class="top-banner">
     <div class="top-banner-text">
       <div class="pulse-dot"></div>
-      <span><strong>A股 Level-2 高频数据引擎</strong>：毫秒级 WebSocket 推流 · 逐笔成交 · 逐笔委托 · 千档深度盘口 · 全市场 5000+ 标的覆盖</span>
+      <span><strong>限时福利</strong>：免费开通 <strong>2 天实盘 Level-2 全功能 WebSocket 推流试用</strong>，支持全市场 5000+ 标的！</span>
     </div>
     <button class="contact-btn" onclick="copyWechat()">
-      💬 添加微信申请试用 Token
+      💬 添加微信申请 2 天试用 Token
     </button>
   </div>
 
@@ -353,11 +435,61 @@
       <p>WebSocket Stream API / Sub-Millisecond Latency / 5000+ Symbols Supported</p>
     </div>
     <div class="badges">
+      <span class="badge badge-green">【免费试用 2 天】</span>
       <span class="badge badge-cyan">【逐笔成交 Tick Trade】</span>
       <span class="badge badge-green">【逐笔委托 Tick Order】</span>
       <span class="badge badge-amber">【千档盘口 1000-Level Depth】</span>
-      <span class="badge badge-purple">【买一档位 50 笔明细】</span>
+      <span class="badge badge-purple">【支持 Linux / 云服务器 / Docker】</span>
     </div>
+  </div>
+
+  <!-- 对比 miniQMT / QMT 优势 -->
+  <div class="comparison-section">
+    <div class="section-title">
+      <span>🔥 全面对比：取代券商 miniQMT / QMT 的核心优势</span>
+    </div>
+    <table class="comparison-table">
+      <thead>
+        <tr>
+          <th>评估维度</th>
+          <th>券商 miniQMT / QMT</th>
+          <th class="highlight-cell">本项目 Level-2 行情服务</th>
+          <th>核心价值</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>资金准入门槛</strong></td>
+          <td>极高（通常需 50万 ~ 100万+ 净资产）</td>
+          <td class="highlight-cell">零资金门槛，个人与机构均可即时接入</td>
+          <td>大幅降低量化研发门槛</td>
+        </tr>
+        <tr>
+          <td><strong>运行环境与架构</strong></td>
+          <td>重度依赖 Windows 客户端，内存占用大易崩溃</td>
+          <td class="highlight-cell">纯标准 WebSocket/REST，原生支持 Linux / Docker / macOS</td>
+          <td>7x24h 自动化无人值守稳定运行</td>
+        </tr>
+        <tr>
+          <td><strong>行情精度与深度</strong></td>
+          <td>仅普通五档/十档切片，无深度微观分布</td>
+          <td class="highlight-cell">双向千档盘口 (1000-Level Depth) + 前50笔队列</td>
+          <td>穿透筹码分布与微观阻力支撑</td>
+        </tr>
+        <tr>
+          <td><strong>逐笔委托与撤单</strong></td>
+          <td>不支持或延迟严重，无法识别申报撤单</td>
+          <td class="highlight-cell">毫秒级逐笔委托，含买卖/撤单申报与原单号</td>
+          <td>精准捕捉游资打板撤单与诱多挂单</td>
+        </tr>
+        <tr>
+          <td><strong>系统解耦与扩展</strong></td>
+          <td>受限于券商沙盒，不支持外部灵活流式对接</td>
+          <td class="highlight-cell">开放标准 API，支持 Backtrader / DolphinDB / 自研系统</td>
+          <td>便于打造专属高频交易中台</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 
   <!-- 主体第一行：逐笔成交 vs 逐笔委托 -->
@@ -531,7 +663,7 @@
   </div>
 
   <!-- 主体第二行：千档深度行情 OrderBook -->
-  <div class="card">
+  <div class="card" style="margin-bottom: 24px;">
     <div class="card-header">
       <div class="card-title">
         <span class="dot dot-amber"></span>
@@ -634,19 +766,48 @@
     </div>
   </div>
 
+  <!-- 全套量化实盘系统搭建支持 -->
+  <div class="system-suite-section">
+    <div class="section-title">
+      <span>🛠️ 全套量化交易系统定制搭建与私有化支持</span>
+    </div>
+    <p style="font-size: 13.5px; color: var(--text-muted); line-height: 1.6;">
+      支持为个人量化交易者、工作室及私募机构提供从“行情中台”到“自动化实盘执行”的整套工业级基础设施建设：
+    </p>
+    <div class="system-grid">
+      <div class="system-card">
+        <h3>1. 毫秒级行情中台网关</h3>
+        <p>全市场千档盘口合成、逐笔清洗、ClickHouse / DolphinDB 高性能冷热历史存储与流式回放。</p>
+      </div>
+      <div class="system-card">
+        <h3>2. 实时因子与选股引擎</h3>
+        <p>开盘竞价异动捕捉、盘中 09:30~09:35 龙头弱转强模型、订单流失衡 (OFI) 与封单排队监控。</p>
+      </div>
+      <div class="system-card">
+        <h3>3. 自动化实盘执行链路</h3>
+        <p>打通主流券商实盘下单接口，支持多券商分仓调度、独立风控拦截与毫秒级打板撤单策略。</p>
+      </div>
+      <div class="system-card">
+        <h3>4. 私有化部署与运维托管</h3>
+        <p>支持 Linux / Docker 纯无头环境私有化部署，提供双机热备与 7x24h 自动化健康自愈。</p>
+      </div>
+    </div>
+  </div>
+
   <!-- 底部转化卡片与联系方式 -->
   <div class="lead-section">
     <div class="lead-info">
-      <h2>🚀 申请开通实时推流 & 免费获取高精度历史回测数据</h2>
+      <h2>🚀 限时免费申请 2 天实时 WebSocket API 试用权限</h2>
       <p>为高频量化、做市策略、微观盘口订单流及超短线打板系统提供高可靠低延迟的行情基础设施。</p>
       <div class="lead-perks">
-        <div class="perk-item">✓ 免费获取热门个股单日全量 L2 逐笔样本包 (Parquet/CSV)</div>
-        <div class="perk-item">✓ 免费申请 3~7 天实时 WebSocket API 测试权限</div>
-        <div class="perk-item">✓ 支持全市场 5000+ 股票、ETF、可转债实时订阅</div>
-        <div class="perk-item">✓ 极低网络延迟，支持私有化集群与行情网关定制</div>
+        <div class="perk-item">✓ 免费体验 2 天全功能全市场实盘 L2 推流</div>
+        <div class="perk-item">✓ 免费领取热门标的单日全量逐笔历史样本包 (Parquet/CSV)</div>
+        <div class="perk-item">✓ 摆脱 miniQMT / QMT 限制，支持 Linux 无头服务器与 Docker</div>
+        <div class="perk-item">✓ 咨询全套量化交易系统（行情+选股+实盘执行）私有化搭建</div>
       </div>
     </div>
     <div class="lead-action-box">
+      <img src="assets/wechat.png" alt="微信联系二维码" class="qr-img" />
       <div class="lead-wechat-label">微信号 (添加请备注: GitHub/量化)</div>
       <div class="lead-wechat-id" id="wechatId">luffy953</div>
       <button class="copy-btn" onclick="copyWechat()">📋 点击复制微信号</button>
@@ -661,7 +822,7 @@
     function copyWechat() {
       const wechat = "luffy953";
       navigator.clipboard.writeText(wechat).then(() => {
-        alert("微信号 [ " + wechat + " ] 已复制到剪贴板！\n请打开微信添加好友，备注「GitHub/量化」快速通过并领取测试权限。");
+        alert("微信号 [ " + wechat + " ] 已复制到剪贴板！\n请打开微信添加好友，备注「GitHub/量化」快速获取 2 天试用 Token 与样本数据包。");
       }).catch(() => {
         prompt("请手动复制微信号：", wechat);
       });
