@@ -7,16 +7,16 @@
 [![Data](https://img.shields.io/badge/Data-Level--2%20Tick%20%26%20Depth-orange.svg)](#)
 [![Symbols](https://img.shields.io/badge/Coverage-5000%2B%20Symbols-cyan.svg)](#)
 [![Latency](https://img.shields.io/badge/Latency-%3C%205ms-red.svg)](#)
-[![Trial](https://img.shields.io/badge/Trial-Free%202--Day%20Access-brightgreen.svg)](#-免费试用2天与技术交流)
+[![Trial](https://img.shields.io/badge/Trial-Available%20Upon%20Request-brightgreen.svg)](#-咨询试用与技术交流)
 [![License](https://img.shields.io/badge/License-MIT-purple.svg)](LICENSE)
 
 **专为量化交易、高频做市、订单流 (Order Flow) 策略与盘口微观结构研究打造的 A股 Level-2 高精度行情基础设施**
 
-[🌐 在线交互看板 (Live Demo)](https://luffy953.github.io/level2-data/) · [🔥 对比/取代 miniQMT](#-全面对比取代-miniqmt--qmt) · [📊 数据字典规范](#-数据结构与字段规范) · [🛠️ 全套量化系统搭建](#️-全套量化交易系统搭建与私有化咨询) · [🎁 申请免费试用2天](#-免费试用2天与技术交流)
+[🌐 在线交互看板 (Live Demo)](https://luffy953.github.io/level2-data/) · [🌟 核心优势](#-核心优势) · [📊 数据字典规范](#-数据结构与字段规范) · [🛠️ 全套量化系统搭建](#️-全套量化交易系统搭建与私有化咨询) · [💬 咨询试用](#-咨询试用与技术交流)
 
 <br/>
 
-<img src="assets/miniqmt_marketing_poster.jpg" alt="Level-2 高频行情与量化交易系统营销海报" width="850" style="border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.3);"/>
+<img src="assets/l2_poster.jpg" alt="Level-2 高频实时行情接口与极速推送" width="460" style="border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.3);"/>
 
 </div>
 
@@ -26,40 +26,27 @@
 
 在现代 A 股量化交易与超短线博弈中，普通 Level-1（3秒一次切片、仅五档买卖）存在严重的**信息滞后与微观结构盲区**，无法满足订单流失衡分析 (OFI)、主力大单撤单诱多识别、高频做市与毫秒级打板监控的需求。
 
-**Level2-Data** 致力于打破传统商业数据源（如 Wind、万得、恒生等每年数万至几十万元）的超高门槛，为个人量化开发者、私募团队与独立研究员提供**全市场、低延迟、高完整度**的 A股 Level-2 高频行情解决方案。
+**Level2-Data** 致力于打破传统商业数据源高昂的采购与接入门槛，为个人量化开发者、私募团队与独立研究员提供**全市场、低延迟、高完整度**的 A股 Level-2 高频行情解决方案。
 
 ---
 
-## 🔥 全面对比：取代 miniQMT / QMT
+## 🌟 核心优势
 
-许多量化团队和个人投资者曾重度依赖券商提供的 miniQMT / QMT，但在实战中深受其痛点困扰。以下是核心维度对比：
+相比于传统券商客户端（如 QMT / miniQMT）通常受限于高额资金门槛（普遍要求 50万 ~ 100万+ 资产）、重度绑定 Windows 桌面环境、容易卡顿崩溃以及多为快照切片等痛点，本项目具备以下特点：
 
-| 评估维度 | 券商 miniQMT / QMT | **本项目 Level-2 行情服务** | 核心优势 |
-| :--- | :--- | :--- | :--- |
-| **资金准入门槛** | **极高**（通常要求 50万 ~ 100万+ 净资产才批准开通） | **零门槛（0 元开通）**，支持任意个人与团队灵活接入 | 极大地降低量化研发与实盘门槛 |
-| **运行环境依赖** | **重度绑定 Windows 桌面**，必须启动庞大客户端，极占内存且易崩溃卡死 | **纯轻量标准协议**，支持 **Linux、Docker、无头云服务器、macOS** 等全平台 | 真正实现 7x24h 自动化无人值守稳定运行 |
-| **盘口行情深度** | 多数仅为常规五档或受限十档切片，无深度微观分布 | **双向千档盘口 (1000-Level Deep OrderBook)** 完整展示 | 穿透底层筹码分布与大单垫单支撑阻力 |
-| **逐笔委托与撤单** | 几乎不支持或延迟极高，无法分析订单申报行为 | **全量毫秒级逐笔委托 (Tick Order)**，包含申报与撤单原单号 | 精准识别游资打板撤单、虚假挂单撤销等特征 |
-| **逐笔成交精度** | 普通切片成交或延迟成交数据 | **毫秒级逐笔成交 (Tick Trade)**，买卖单号严格对应，主买/主卖精准归因 | 订单流 (Order Flow) 与微观价格冲击分析利器 |
-| **系统解耦与扩展** | 绑定券商沙盒，不支持外部灵活流式对接 | **标准 WebSocket / REST API**，原生支持 Python、C++、Go、Rust，无缝接入各类量化回测框架 | 便于自建量化中台与分布式集群 |
+- 🚀 **零门槛开箱即用**：无资金资产要求，个人与机构均可快速接入；
+- 🐧 **跨平台轻量解耦**：标准 WebSocket / REST 接口协议，原生完美支持 **Linux、Docker、云服务器、macOS**，真正实现 7x24h 自动化无人值守运行；
+- 📊 **深度与微观穿透**：支持 **双向千档盘口深度 (1000-Level Deep OrderBook)** 与买一/卖一档位前 50 笔委托明细队列；
+- ⚡ **毫秒级逐笔全量追踪**：提供全量**逐笔委托与撤单 (Tick Order)** 以及买卖单号严格匹配的**逐笔成交 (Tick Trade)**，精准捕捉大单挂撤与资金流动；
+- 🔌 **灵活生态集成**：开放标准数据流，无缝对接 Python、C++、Go、Backtrader、DolphinDB、ClickHouse 等任意量化框架。
 
 ---
 
 ## 🖥️ 在线交互看板
 
-项目自带高颜值深色金融终端交互看板，无需配置本地环境，直接点击体验千档盘口与逐笔数据流动：
+项目自带深色金融终端交互看板，无需配置本地环境，直接点击体验千档盘口与逐笔数据流动：
 
 👉 **[点击直接访问在线看板 (GitHub Pages)](https://luffy953.github.io/level2-data/)**
-
----
-
-## 🌟 核心特性与数据流
-
-- ⚡ **毫秒级逐笔成交 (Tick Trade)**：全市场每笔撮合毫秒时间戳、主动买卖方向 (B/S)、真实撮合量价、买卖双方原始申报单号精确匹配。
-- 📋 **逐笔委托与撤单 (Tick Order)**：全量委托订单流，精准捕捉机构大单挂单、垫单、扫盘与秒级大单撤销行为。
-- 📊 **千档深度盘口 (1000-Level Depth)**：超越传统十档盘口，支持双向各 1000 档位订单深度累计与微观分布。
-- 🔍 **最优档位挂单队列 (Top-50 Queue)**：买一/卖一档位前 50 笔委托明细分布，拆解排队单构成。
-- 🔄 **高并发稳定推流**：支持 WebSocket 订阅、断线重连、心跳保活；支持全量历史数据导出为 Parquet / CSV / ClickHouse / DolphinDB。
 
 ---
 
@@ -131,7 +118,7 @@ pip install websocket-client
 import json
 import websocket
 
-# 获取 2 天免费测试 Token 请联系微信: luffy953
+# 获取测试 Token 请联系微信: luffy953
 TOKEN = "YOUR_TRIAL_TOKEN"
 WS_ENDPOINT = f"wss://quote.stream.example.com/ws/l2?token={TOKEN}"
 
@@ -170,33 +157,29 @@ if __name__ == "__main__":
 3. **自动化实盘交易与执行链路**：
    - 独立实盘下单通道打通（支持东方财富、同花顺等主流券商自动化下单执行）；
    - 具备独立风控拦截、多券商分仓调度、断网重连与异常止损机制。
-4. **多端协同与风控看板**：
-   - 网页端实时监控看板、钉钉/微信/企业微信异动毫秒级推送报警。
+4. **私有化部署与运维托管**：
+   - 支持 Linux / Docker 纯无头环境私有化部署，提供双机热备与 7x24h 自动化健康自愈。
 
 > 无论是个人开发者转型量化交易，还是私募团队需要自建专属交易链路，均可联系探讨全套解决方案。
 
 ---
 
-## 🎁 免费试用 2 天与技术交流
+## 💬 咨询试用与技术交流
 
-我们为 GitHub 开源社区的量化同行提供**限时 2 天全功能免费试用权限**：
+如果你对 A 股 Level-2 高频数据感兴趣，欢迎添加微信咨询试用与交流合作：
 
 <div align="center">
 
-<img src="assets/wechat.png" alt="微信联系方式" width="220" style="border-radius: 8px; border: 1px solid #ddd;"/>
+<img src="assets/wechat_qrcode.jpg" alt="微信名片二维码" width="230" style="border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 4px 16px rgba(0,0,0,0.15);"/>
 
-### 📱 微信联系：**`luffy953`**  
-*(添加时请备注：**GitHub / 量化**，以便优先开通)*
+### 📱 微信：**`luffy953`**  
+*(添加时请备注：**GitHub / 量化**，以便快速通过)*
 
 </div>
 
-### 🎯 专享福利：
-1. **免费开通 2 天实时 WebSocket API 试用权限**：
-   - 独立 API 接入 Token，直接订阅全市场 5000+ 股票、ETF、可转债的千档盘口与逐笔数据流。
-2. **免费领取历史高精度逐笔样本包**：
-   - 包含贵州茅台 (600519)、宁德时代 (300750) 等核心标的**单日全量逐笔成交、逐笔委托与千档盘口文件** (Parquet / CSV / JSON)。
-3. **全套量化交易架构咨询**：
-   - 探讨 micro-structure 盘口特征、高频做市、实盘自动下单与券商通道替代方案。
+- 🎯 **申请测试 Token**：体验毫秒级 WebSocket 推流与全市场 5000+ 标的实时订阅；
+- 📦 **样本数据获取**：获取热门标的单日全量逐笔成交、逐笔委托与千档盘口回测文件 (Parquet / CSV)；
+- 🤝 **量化方案交流**：交流微观盘口特征、订单流策略、高频回测以及实盘交易系统全套搭建。
 
 ---
 
