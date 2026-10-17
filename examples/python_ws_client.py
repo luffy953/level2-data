@@ -2,7 +2,7 @@
 A-Share Level-2 WebSocket Client Demo
 -------------------------------------
 用于演示如何订阅 A股 Level-2 逐笔成交、逐笔委托与千档盘口数据。
-获取测试 Token 与历史高频回测数据，请联系微信: luffy953 (备注: GitHub/量化)
+获取测试 Token 与历史高频回测数据，请联系微信: luffy953 或 LUFFY9531 (备注: GitHub/量化)
 """
 
 import json
@@ -70,7 +70,7 @@ def on_open(ws):
 
 if __name__ == "__main__":
     print("正在启动 Level-2 行情接收客户端...")
-    print("提示: 申请测试 Token 请联系微信: luffy953")
+    print("提示: 申请测试 Token 请联系微信: luffy953 或 LUFFY9531")
     
     ws_app = websocket.WebSocketApp(
         WS_ENDPOINT,
